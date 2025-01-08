@@ -32,7 +32,7 @@ class YesterdayGameDataOperator(BaseOperator):
                     "gameDetail": None if game_detail_to_json == 'null' else game_detail_to_json,
                 })
             except:
-                print("실패 ID : ", temp_game_id)
+                self.log.info(f"실패 ID : {temp_game_id}")
                 continue
 
         return data_list
@@ -81,9 +81,9 @@ class YesterdayGameDataOperator(BaseOperator):
                         home_players.append(temp_player)
 
                 game_detail = {
-                    'away_teams': away_teams,       
-                    'home_teams': home_teams,       
-                    'away_players': away_players,       
+                    'away_teams': away_teams,
+                    'home_teams': home_teams,
+                    'away_players': away_players,
                     'home_players': home_players
                     }
                 game_detail_to_json = json.dumps(game_detail)
@@ -94,7 +94,7 @@ class YesterdayGameDataOperator(BaseOperator):
                     "gameDetail": None if game_detail_to_json == 'null' else game_detail_to_json,
                 })
             except:
-                print("실패 ID : ", temp_game_id)
+                self.log.info(f"실패 ID : {temp_game_id}")
                 continue
 
         return data_list
@@ -125,7 +125,7 @@ class YesterdayGameDataOperator(BaseOperator):
                     'gameBoard': game_board_to_json
                     })
             except:
-                print("실패 ID : ", temp_game_id)
+                self.log.info(f"실패 ID : {temp_game_id}")
                 continue
         return data_list
 
@@ -154,32 +154,28 @@ class YesterdayGameDataOperator(BaseOperator):
         # sports update
         try:
             for temp_data in sports_data:
-                custom_mysql_hook.update_query(temp_data)    
+                custom_mysql_hook.update_query(temp_data)
                 check_update += 1
         except Exception as e:
-            print(e)
-            print(temp_data.get('gameId'))
+            self.log.info(e)
+            self.log.info(temp_data.get('gameId'))
 
         # epl update
         try:
             for temp_data in epl_data:
-                custom_mysql_hook.update_query(temp_data)    
+                custom_mysql_hook.update_query(temp_data)
                 check_update += 1
         except Exception as e:
-            print(e)
-            print(temp_data.get('gameId'))
+            self.log.info(e)
+            self.log.info(temp_data.get('gameId'))
 
         # lck update
         try:
             for temp_data in lck_data:
-                custom_mysql_hook.lck_update_query(temp_data)    
+                custom_mysql_hook.lck_update_query(temp_data)
                 check_update += 1
         except Exception as e:
-            print(e)
-            print(temp_data.get('gameId'))
+            self.log.info(e)
+            self.log.info(temp_data.get('gameId'))
 
         self.log.info(f"업데이트한 경기수 : {check_update}")
-        
-    
-
-        
