@@ -62,3 +62,10 @@ class MySQLAPIHook(BaseHook):
         qr = game_table.update().where(game_table.c.gameId == temp_data.get('gameId')
                                        ).values(gameBoard = temp_data.get('gameBoard'))
         engine.execute(qr)
+
+    #
+    def append_data(self, save_df):
+        db_connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/spoton"
+
+        engine = create_engine(db_connection_str)
+        save_df.to_sql(name = "game_data", con = engine, if_exists = "append", index = False)
