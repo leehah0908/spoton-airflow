@@ -35,6 +35,7 @@ jobs:
                       sudo rm -rf spoton-airflow/files || true
                       sudo rm -rf spoton-airflow/plugins || true
 
+                      sudo rm -rf airflow-clone || true
                       git clone https://github.com/leehah0908/spoton-airflow.git airflow-clone
 
                       sudo cp -r ./airflow-clone/config ./spoton-airflow/ || true
