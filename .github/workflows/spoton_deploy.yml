@@ -12,6 +12,8 @@ jobs:
         steps:
             - name: Github Repository Code Load
               uses: actions/checkout@v4
+              with:
+                  path: spoton
 
             - name: AWS credentials setting (for Access AWS Resource)
               uses: aws-actions/configure-aws-credentials@v4
@@ -28,6 +30,7 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
+                      ls -a
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/dags/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
