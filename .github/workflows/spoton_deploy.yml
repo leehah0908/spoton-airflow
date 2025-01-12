@@ -30,9 +30,9 @@ jobs:
                   script: |
                       cd spoton/ || exit 1
                       docker-compose down -v || true
-                      sudo rm -rf spoton-airflow/ || true
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       git clone https://github.com/leehah0908/spoton-airflow.git
-                      sudo rm -rf .git/ || true
-                      sudo rm -rf .github/ || true
-                      sudo rm .gitignore/ || true
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airlfow/.git/ || exit 1
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airlfow/.github/ || exit 1
+                      sudo rm /home/ubuntu/spoton/spoton-airlfow/.gitignore || exit 1
                       docker-compose up -d
