@@ -33,7 +33,7 @@ jobs:
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
-
+                      ls -al ./spoton
                       sudo cp -r ./spoton/dags /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       sudo cp -r ./spoton/config /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       sudo cp -r ./spoton/files /home/ubuntu/spoton/spoton-airflow/ || exit 1
