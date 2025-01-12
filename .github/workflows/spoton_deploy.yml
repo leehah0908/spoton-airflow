@@ -32,7 +32,7 @@ jobs:
                       docker-compose down -v || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       git clone https://github.com/leehah0908/spoton-airflow.git
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airlfow/.git/ || exit 1
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airlfow/.github/ || exit 1
-                      sudo rm /home/ubuntu/spoton/spoton-airlfow/.gitignore || exit 1
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/.git/ || exit 1
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/.github/ || exit 1
+                      sudo rm /home/ubuntu/spoton/spoton-airflow/.gitignore || exit 1
                       docker-compose up -d
