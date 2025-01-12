@@ -34,7 +34,7 @@ jobs:
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
 
-                      sudo cp -r $GITHUB_WORKSPACE/spoton/dags /home/ubuntu/spoton/spoton-airflow/ || exit 1
-                      sudo cp -r $GITHUB_WORKSPACE/spoton/config /home/ubuntu/spoton/spoton-airflow/ || exit 1
-                      sudo cp -r $GITHUB_WORKSPACE/spoton/files /home/ubuntu/spoton/spoton-airflow/ || exit 1
-                      sudo cp -r $GITHUB_WORKSPACE/spoton/plugins /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r ./spoton/dags /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r ./spoton/config /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r ./spoton/files /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r ./spoton/plugins /home/ubuntu/spoton/spoton-airflow/ || exit 1
