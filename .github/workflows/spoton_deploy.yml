@@ -28,12 +28,12 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      ls -a
+                      ls -a $GITHUB_WORKSPACE
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/dags/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
-                      ls -al $GITHUB_WORKSPACE
+                      find $GITHUB_WORKSPACE
                       sudo cp -r .$GITHUB_WORKSPACE/spoton/dags ./spoton/spoton-airflow/ || exit 1
                       sudo cp -r .$GITHUB_WORKSPACE/spoton/config ./spoton/spoton-airflow/ || exit 1
                       sudo cp -r .$GITHUB_WORKSPACE/spoton/files ./spoton/spoton-airflow/ || exit 1
