@@ -20,21 +20,7 @@ jobs:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-            - name: SSH - EC2 access
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                  username: ubuntu
-                  host: ${{ secrets.EC2_HOST }}
-                  key: ${{ secrets.EC2_PRIVATE_KEY }}
-                  script_stop: true
-                  script: |
-                      ls -a $GITHUB_WORKSPACE
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/dags/ || true
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
-                      find $GITHUB_WORKSPACE
-                      sudo cp -r .$GITHUB_WORKSPACE/spoton/dags ./spoton/spoton-airflow/ || exit 1
-                      sudo cp -r .$GITHUB_WORKSPACE/spoton/config ./spoton/spoton-airflow/ || exit 1
-                      sudo cp -r .$GITHUB_WORKSPACE/spoton/files ./spoton/spoton-airflow/ || exit 1
-                      sudo cp -r .$GITHUB_WORKSPACE/spoton/plugins ./spoton/spoton-airflow/ || exit 1
+            - name: Transfer code to EC2
+              run: |
+                  ssh -i ${{ secrets.EC2_PRIVATE_KEY }} ubuntu@${{ secrets.EC2_HOST }} "rm -rf /home/ubuntu/spoton/spoton-airflow/dags/"
+                  scp -i ${{ secrets.EC2_PRIVATE_KEY }} -r $GITHUB_WORKSPACE/dags ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/spoton/spoton-airflow/
