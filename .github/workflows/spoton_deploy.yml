@@ -28,11 +28,13 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      cd spoton/ || exit 1
-                      docker-compose down -v || true
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/ || exit 1
-                      git clone https://github.com/leehah0908/spoton-airflow.git
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/.git/ || exit 1
-                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/.github/ || exit 1
-                      sudo rm /home/ubuntu/spoton/spoton-airflow/.gitignore || exit 1
-                      docker-compose up -d
+                      ls -a
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/dags/ || true
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
+                      sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
+
+                      sudo cp -r dags /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r config /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r files /home/ubuntu/spoton/spoton-airflow/ || exit 1
+                      sudo cp -r plugins /home/ubuntu/spoton/spoton-airflow/ || exit 1
