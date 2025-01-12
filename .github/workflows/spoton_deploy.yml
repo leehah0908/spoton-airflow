@@ -28,7 +28,8 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      ls -a 
+                      cd spoton || exit 1
+                      ls -a
                       sudo rm -rf spoton-airflow/config || true
                       sudo rm -rf spoton-airflow/dags || true
                       sudo rm -rf spoton-airflow/files || true
