@@ -37,4 +37,7 @@ jobs:
 
                       git clone https://github.com/leehah0908/spoton-airflow.git airflow-clone
 
-                      sudo cp -r ./airflow-clone/dags ./spoton-airflow/ || exit 1
+                      sudo cp -r ./airflow-clone/config ./spoton-airflow/ || true
+                      sudo cp -r ./airflow-clone/dags ./spoton-airflow/ || true
+                      sudo cp -r ./airflow-clone/files ./spoton-airflow/ || true
+                      sudo cp -r ./airflow-clone/plugins ./spoton-airflow/ || true
