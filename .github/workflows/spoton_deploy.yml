@@ -12,8 +12,6 @@ jobs:
         steps:
             - name: Github Repository Code Load
               uses: actions/checkout@v4
-              with:
-                  path: spoton
 
             - name: AWS credentials setting (for Access AWS Resource)
               uses: aws-actions/configure-aws-credentials@v4
@@ -35,7 +33,7 @@ jobs:
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/config/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/files/ || true
                       sudo rm -rf /home/ubuntu/spoton/spoton-airflow/plugins/ || true
-                      ls -a $GITHUB_WORKSPACE/spoton
+
                       sudo cp -r $GITHUB_WORKSPACE/spoton/dags /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       sudo cp -r $GITHUB_WORKSPACE/spoton/config /home/ubuntu/spoton/spoton-airflow/ || exit 1
                       sudo cp -r $GITHUB_WORKSPACE/spoton/files /home/ubuntu/spoton/spoton-airflow/ || exit 1
