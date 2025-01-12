@@ -28,7 +28,8 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      for dir in dags config files plugins; do
-                          rsync -avz --delete --rsync-path="mkdir -p /home/ubuntu/spoton/spoton-airflow/$dir && rsync" \
-                              $GITHUB_WORKSPACE/$dir/ /home/ubuntu/spoton/spoton-airflow/$dir/
-                      done
+                      cd spoton/ || exit 1
+                      docker-compose down -v || true
+                      rm -rf spoton-airflow/ || true
+                      git clone https://github.com/leehah0908/spoton-airflow.git
+                      docker-compose up -d
