@@ -63,7 +63,7 @@ class MySQLAPIHook(BaseHook):
                                        ).values(gameBoard = temp_data.get('gameBoard'))
         engine.execute(qr)
 
-    #
+    # 새로운 경기 데이터 append
     def append_data(self, save_df):
         db_connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/spoton"
 
