@@ -132,13 +132,19 @@ class YesterdayGameDataOperator(BaseOperator):
     # 오퍼레이터 실행
     def execute(self, context):
         from datetime import datetime, timedelta
+        import pendulum
+        
         check_update = 0
 
         custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
 
-        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        # 어제의 날짜 계산
+        yesterday_start = (datetime.now(pendulum.timezone("Asia/Seoul")) - timedelta(days=1)).strftime("%Y-%m-%d 00:00:00")
+        yesterday_end = (datetime.now(pendulum.timezone("Asia/Seoul")) - timedelta(days=1)).strftime("%Y-%m-%d 23:59:59")
 
-        query = f"SELECT * FROM game_data WHERE DATE_FORMAT(gameDate, '%%Y-%%m-%%d') = '{yesterday}'"
+        # 범위 조건으로 쿼리 작성
+        query = f"SELECT * FROM game_data WHERE gameDate BETWEEN '{yesterday_start}' AND '{yesterday_end}'"
+
         df = custom_mysql_hook.select_query(query)
         self.log.info(f"업데이트할 경기수 : {len(df)}")
 
