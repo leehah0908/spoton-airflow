@@ -154,7 +154,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # sports update
         for temp_data in sports_data:
             try:
-                self.log.info(f"temp_data : {temp_data}")
                 custom_mysql_hook.update_query(temp_data)
             except Exception as e:
                 self.log.info(e)
@@ -163,7 +162,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # epl update
         for temp_data in epl_data:
             try:
-                self.log.info(f"temp_data : {temp_data}")
                 custom_mysql_hook.update_query(temp_data)
             except Exception as e:
                 self.log.info(e)
@@ -172,7 +170,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # lck update
         for temp_data in lck_data:
             try:
-                self.log.info(f"temp_data : {temp_data}")
                 custom_mysql_hook.lck_update_query(temp_data)
             except Exception as e:
                 self.log.info(e)

@@ -51,12 +51,8 @@ class MySQLAPIHook(BaseHook):
         qr = game_table.update().where(game_table.c.gameId == temp_data.get('gameId')
                                        ).values(gameBoard = temp_data.get('gameBoard'),
                                                 gameDetail = temp_data.get('gameDetail'))
-        # 쿼리 실행
-        with engine.connect() as connection:
-            result = connection.execute(qr)
-            self.log.info(f"업데이트 컬럼 수: {result.rowcount}")
         
-        # engine.execute(qr)
+        engine.execute(qr)
 
     # update 쿼리 실행 (lck)
     def lck_update_query(self, temp_data):
@@ -68,13 +64,8 @@ class MySQLAPIHook(BaseHook):
 
         qr = game_table.update().where(game_table.c.gameId == temp_data.get('gameId')
                                        ).values(gameBoard = temp_data.get('gameBoard'))
-        
-        # 쿼리 실행
-        with engine.connect() as connection:
-            result = connection.execute(qr)
-            self.log.info(f"업데이트 컬럼 수: {result.rowcount}")
 
-        # engine.execute(qr)
+        engine.execute(qr)
 
     # 새로운 경기 데이터 append
     def append_data(self, save_df):
