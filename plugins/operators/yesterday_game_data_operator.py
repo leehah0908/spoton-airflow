@@ -137,7 +137,6 @@ class YesterdayGameDataOperator(BaseOperator):
         check_update = 0
 
         custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
-        custom_mysql_hook.get_conn()
 
         # 어제의 날짜 계산
         yesterday_start = (datetime.now(pendulum.timezone("Asia/Seoul")) - timedelta(days=1)).strftime("%Y-%m-%d 00:00:00")

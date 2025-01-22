@@ -42,6 +42,7 @@ class MySQLAPIHook(BaseHook):
     
     # update 쿼리 실행
     def update_query(self, temp_data):
+        self.get_conn()
         db_connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/spoton"
 
         engine = create_engine(db_connection_str)
@@ -54,6 +55,7 @@ class MySQLAPIHook(BaseHook):
 
     # update 쿼리 실행 (lck)
     def lck_update_query(self, temp_data):
+        self.get_conn()
         db_connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/spoton"
 
         engine = create_engine(db_connection_str)
@@ -65,6 +67,7 @@ class MySQLAPIHook(BaseHook):
 
     # 새로운 경기 데이터 append
     def append_data(self, save_df):
+        self.get_conn()
         db_connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:3306/spoton"
 
         engine = create_engine(db_connection_str)

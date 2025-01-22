@@ -143,7 +143,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
         import json
 
         custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
-        custom_mysql_hook.get_conn()
 
         data = self.redis_client.get("today_game_list")
         today_game_list = json.loads(data)
