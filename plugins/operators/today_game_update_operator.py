@@ -143,6 +143,7 @@ class TodayGameRealTimeUpdate(BaseOperator):
         import json
 
         custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
+        custom_mysql_hook.get_conn()
 
         data = self.redis_client.get("today_game_list")
         today_game_list = json.loads(data)
@@ -150,27 +151,30 @@ class TodayGameRealTimeUpdate(BaseOperator):
         sports_data = self.sports_update(today_game_list.get('sports_list'))
         epl_data = self.epl_update(today_game_list.get('epl_list'))
         lck_data = self.lck_update(today_game_list.get('lck_list'))
-        
+
         # sports update
-        try:
-            for temp_data in sports_data:
+        for temp_data in sports_data:
+            try:
+                self.log.info(f"temp_data : {temp_data}")
                 custom_mysql_hook.update_query(temp_data)
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))
 
         # epl update
-        try:
-            for temp_data in epl_data:
+        for temp_data in epl_data:
+            try:
+                self.log.info(f"temp_data : {temp_data}")
                 custom_mysql_hook.update_query(temp_data)
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))
 
         # lck update
-        try:
-            for temp_data in lck_data:
-                custom_mysql_hook.update_query(temp_data)
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+        for temp_data in lck_data:
+            try:
+                self.log.info(f"temp_data : {temp_data}")
+                custom_mysql_hook.lck_update_query(temp_data)
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))

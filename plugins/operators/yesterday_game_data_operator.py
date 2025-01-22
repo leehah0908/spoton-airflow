@@ -137,6 +137,7 @@ class YesterdayGameDataOperator(BaseOperator):
         check_update = 0
 
         custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
+        custom_mysql_hook.get_conn()
 
         # 어제의 날짜 계산
         yesterday_start = (datetime.now(pendulum.timezone("Asia/Seoul")) - timedelta(days=1)).strftime("%Y-%m-%d 00:00:00")
@@ -158,30 +159,30 @@ class YesterdayGameDataOperator(BaseOperator):
         lck_data = self.lck_update(lck_list)
         
         # sports update
-        try:
-            for temp_data in sports_data:
+        for temp_data in sports_data:
+            try:
                 custom_mysql_hook.update_query(temp_data)
                 check_update += 1
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))
 
         # epl update
-        try:
-            for temp_data in epl_data:
+        for temp_data in epl_data:
+            try:
                 custom_mysql_hook.update_query(temp_data)
                 check_update += 1
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))
 
         # lck update
-        try:
-            for temp_data in lck_data:
+        for temp_data in lck_data:
+            try:
                 custom_mysql_hook.lck_update_query(temp_data)
                 check_update += 1
-        except Exception as e:
-            self.log.info(e)
-            self.log.info(temp_data.get('gameId'))
+            except Exception as e:
+                self.log.info(e)
+                self.log.info(temp_data.get('gameId'))
 
         self.log.info(f"업데이트한 경기수 : {check_update}")
