@@ -41,7 +41,7 @@ class TodayGameCheck(BaseOperator):
         today_game_dic = {
             "sports_list": sports_list,
             "epl_list": epl_list,
-            "lck_list:": lck_list
+            "lck_list": lck_list
         }
 
         self.redis_client.set("today_game_list", json.dumps(today_game_dic), ex=88200)

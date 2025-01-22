@@ -1,10 +1,12 @@
 from airflow.models.baseoperator import BaseOperator
+from hooks.custom_mysql_hook import MySQLAPIHook
 import redis
 
 class TodayGameRealTimeUpdate(BaseOperator):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.mysql_conn_id = 'conn-db-mysql-custom'
 
         # Redis 클라이언트 설정
         self.redis_client = redis.StrictRedis(
@@ -140,6 +142,8 @@ class TodayGameRealTimeUpdate(BaseOperator):
     def execute(self, context):
         import json
 
+        custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
+
         data = self.redis_client.get("today_game_list")
         today_game_list = json.loads(data)
 
@@ -150,7 +154,7 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # sports update
         try:
             for temp_data in sports_data:
-                self.redis_client.set(temp_data.get('gameId'), json.dumps(temp_data), ex=70)
+                custom_mysql_hook.update_query(temp_data)
         except Exception as e:
             self.log.info(e)
             self.log.info(temp_data.get('gameId'))
@@ -158,7 +162,7 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # epl update
         try:
             for temp_data in epl_data:
-                self.redis_client.set(temp_data.get('gameId'), json.dumps(temp_data), ex=70)
+                custom_mysql_hook.update_query(temp_data)
         except Exception as e:
             self.log.info(e)
             self.log.info(temp_data.get('gameId'))
@@ -166,7 +170,7 @@ class TodayGameRealTimeUpdate(BaseOperator):
         # lck update
         try:
             for temp_data in lck_data:
-                self.redis_client.set(temp_data.get('gameId'), json.dumps(temp_data), ex=70)
+                custom_mysql_hook.update_query(temp_data)
         except Exception as e:
             self.log.info(e)
             self.log.info(temp_data.get('gameId'))
