@@ -44,4 +44,4 @@ class TodayGameCheck(BaseOperator):
             "lck_list": lck_list
         }
 
-        self.redis_client.set("today_game_list", json.dumps(today_game_dic), ex=88200)
+        self.redis_client.set("today_game_list", json.dumps(today_game_dic), ex=86400)
