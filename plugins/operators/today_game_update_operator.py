@@ -1,5 +1,4 @@
 from airflow.models.baseoperator import BaseOperator
-from hooks.custom_mysql_hook import MySQLAPIHook
 import redis
 
 class TodayGameRealTimeUpdate(BaseOperator):
@@ -13,6 +12,13 @@ class TodayGameRealTimeUpdate(BaseOperator):
             host="spoton-redis",
             port=6379,
             db=4,
+            decode_responses=True
+        )
+
+        self.redis_client_db3 = redis.StrictRedis(
+            host="spoton-redis",
+            port=6379,
+            db=3,
             decode_responses=True
         )
 
@@ -36,9 +42,15 @@ class TodayGameRealTimeUpdate(BaseOperator):
                 game_detail_to_json = json.dumps(game_detail_data)
 
                 data_list.append({
-                    "gameId":temp_game_id,
-                    "gameBoard": game_board_to_json,
-                    "gameDetail": None if game_detail_to_json == 'null' else game_detail_to_json,
+                    "gameId" : temp_game_id,
+                    'gameDate' : game_board_data.get('gameDateTime'),
+                    'sports' : game_board_data.get('superCategoryId'),
+                    'league' : game_board_data.get('categoryId'),
+                    'homeTeam' : game_board_data.get('homeTeamName'),
+                    'awayTeam' : game_board_data.get('awayTeamName'),
+                    "gameBoard": game_board_data,
+                    "gameDetail": game_detail_data,
+                    'cancel' : game_board_data.get('cancel'),
                 })
             except:
                 self.log.info(f"실패 ID : {temp_game_id}")
@@ -99,8 +111,14 @@ class TodayGameRealTimeUpdate(BaseOperator):
 
                 data_list.append({
                     "gameId":temp_game_id,
-                    "gameBoard": game_board_to_json,
-                    "gameDetail": None if game_detail_to_json == 'null' else game_detail_to_json,
+                    'gameDate' : game_board_data.get('gameDateTime'),
+                    'sports' : game_board_data.get('superCategoryId'),
+                    'league' : game_board_data.get('categoryId'),
+                    'homeTeam' : game_board_data.get('homeTeamName'),
+                    'awayTeam' : game_board_data.get('awayTeamName'),
+                    "gameBoard": game_board_data,
+                    "gameDetail": game_detail,
+                    'cancel' : game_board_data.get('cancel'),
                 })
             except:
                 self.log.info(f"실패 ID : {temp_game_id}")
@@ -110,6 +128,7 @@ class TodayGameRealTimeUpdate(BaseOperator):
     
     # lck 경기 데이터 요청
     def lck_update(self, lck_list):
+        from datetime import datetime
         import requests
         import json
 
@@ -118,20 +137,27 @@ class TodayGameRealTimeUpdate(BaseOperator):
         for temp_game_id in lck_list:
             try:
                 game_board_url = f"https://esports-api.game.naver.com/service/v1/match/gameId/{temp_game_id}"
-                game_board_response = requests.get(game_board_url).json()
+                game_board_response = requests.get(game_board_url).json().get('content')
 
                 gameBoard = {
-                    'homeTeamScore' : game_board_response.get('content').get('homeScore'),
-                    'awayTeamScore' : game_board_response.get('content').get('awayScore'),
-                    'statusCode' : game_board_response.get('content').get('matchStatus'),
-                    'statusInfo' : game_board_response.get('content').get('currentMatchSet'),
-                    'stadium' : game_board_response.get('content').get('stadium')
+                    'homeTeamScore' : game_board_response.get('homeScore'),
+                    'awayTeamScore' : game_board_response.get('awayScore'),
+                    'statusCode' : game_board_response.get('matchStatus'),
+                    'statusInfo' : game_board_response.get('currentMatchSet'),
+                    'stadium' : game_board_response.get('stadium')
                     }
                 game_board_to_json = json.dumps(gameBoard)
 
                 data_list.append({
                     'gameId':temp_game_id,
-                    'gameBoard': game_board_to_json
+                    'gameDate' : datetime.fromtimestamp(game_board_response.get('startDate')/1000),
+                    'sports' : 'esports',
+                    'league' : game_board_response.get('topLeagueId'),
+                    'homeTeam' : game_board_response.get('homeTeam').get('name'),
+                    'awayTeam' : game_board_response.get('awayTeam').get('name'),
+                    'gameBoard': gameBoard,
+                    "gameDetail": None,
+                    'cancel' : False,
                     })
             except:
                 self.log.info(f"실패 ID : {temp_game_id}")
@@ -142,8 +168,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
     def execute(self, context):
         import json
 
-        custom_mysql_hook = MySQLAPIHook(self.mysql_conn_id)
-
         data = self.redis_client.get("today_game_list")
         today_game_list = json.loads(data)
 
@@ -151,26 +175,13 @@ class TodayGameRealTimeUpdate(BaseOperator):
         epl_data = self.epl_update(today_game_list.get('epl_list'))
         lck_data = self.lck_update(today_game_list.get('lck_list'))
 
-        # sports update
-        for temp_data in sports_data:
+        all_list = sports_data + epl_data + lck_data
+        
+        for temp_data in all_list:
             try:
-                custom_mysql_hook.update_query(temp_data)
-            except Exception as e:
-                self.log.info(e)
-                self.log.info(temp_data.get('gameId'))
-
-        # epl update
-        for temp_data in epl_data:
-            try:
-                custom_mysql_hook.update_query(temp_data)
-            except Exception as e:
-                self.log.info(e)
-                self.log.info(temp_data.get('gameId'))
-
-        # lck update
-        for temp_data in lck_data:
-            try:
-                custom_mysql_hook.lck_update_query(temp_data)
+                save_data = json.dumps(temp_data, ensure_ascii=False)
+                self.log.info(save_data)
+                self.redis_client_db3.set(temp_data.get("gameId"), save_data, ex=70)
             except Exception as e:
                 self.log.info(e)
                 self.log.info(temp_data.get('gameId'))
