@@ -25,7 +25,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
     # 일반 종목 경기 데이터 요청
     def sports_update(self, sports_list):
         import requests
-        import json
 
         data_list = []
 
@@ -34,12 +33,10 @@ class TodayGameRealTimeUpdate(BaseOperator):
                 game_board_url = f"https://api-gw.sports.naver.com/schedule/games/{temp_game_id}"
                 game_board_response = requests.get(game_board_url).json()
                 game_board_data = game_board_response.get('result').get('game')
-                game_board_to_json = json.dumps(game_board_data)
 
                 game_detail_url = f"https://api-gw.sports.naver.com/schedule/games/{temp_game_id}/record"
                 game_detail_response = requests.get(game_detail_url).json()
                 game_detail_data = game_detail_response.get('result').get('recordData')
-                game_detail_to_json = json.dumps(game_detail_data)
 
                 data_list.append({
                     "gameId" : temp_game_id,
@@ -61,7 +58,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
     # epl 경기 데이터 요청
     def epl_update(self, epl_list):
         import requests
-        import json
 
         data_list = []
 
@@ -75,7 +71,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
                 game_board_url = f"https://api-gw.sports.naver.com/schedule/games/{temp_game_id}"
                 game_board_response = requests.get(game_board_url).json()
                 game_board_data = game_board_response.get('result').get('game')
-                game_board_to_json = json.dumps(game_board_data)
 
                 away_team_code = game_board_data.get('awayTeamCode')
                 home_team_code = game_board_data.get('homeTeamCode')
@@ -107,7 +102,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
                     'away_players': away_players,
                     'home_players': home_players
                     }
-                game_detail_to_json = json.dumps(game_detail)
 
                 data_list.append({
                     "gameId":temp_game_id,
@@ -130,7 +124,6 @@ class TodayGameRealTimeUpdate(BaseOperator):
     def lck_update(self, lck_list):
         from datetime import datetime
         import requests
-        import json
 
         data_list = []
 
@@ -146,11 +139,10 @@ class TodayGameRealTimeUpdate(BaseOperator):
                     'statusInfo' : game_board_response.get('currentMatchSet'),
                     'stadium' : game_board_response.get('stadium')
                     }
-                game_board_to_json = json.dumps(gameBoard)
 
                 data_list.append({
                     'gameId':temp_game_id,
-                    'gameDate' : datetime.fromtimestamp(game_board_response.get('startDate')/1000),
+                    'gameDate' : datetime.fromtimestamp(game_board_response.get('startDate')/1000).strftime('%Y-%m-%d %H:%M:%S'),
                     'sports' : 'esports',
                     'league' : game_board_response.get('topLeagueId'),
                     'homeTeam' : game_board_response.get('homeTeam').get('name'),
